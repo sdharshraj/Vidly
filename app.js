@@ -14,7 +14,7 @@ mongoose.connect(uri, {
 app.use(express.json());
 app.use(express.static('public'));
 app.set('view engine', 'pug');
-app.set('views', './views'); // default so option
+app.set('views', './views'); // default so optional
 app.use('/api/genres', genres);
 app.use('/', home);
 
