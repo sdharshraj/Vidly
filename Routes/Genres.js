@@ -1,58 +1,66 @@
 const express = require('express');
 const joi = require('joi');
+const mongoose = require('mongoose');
+
 const router = express.Router();
 
-const genres = [
-    {id:1, name: 'Action'},
-    {id:2, name: 'Adventures'},
-    {id:3, name: 'Drama'},
-    {id:4, name: 'Scifi'}
-];
+const genreSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        min: 4,
+        max: 50
+    }
+});
 
-router.get('/', (req, res) => {
+const Genre = mongoose.model('Genre', genreSchema);
+router.get('/', async (req, res) => {
+    const genres = await Genre.find().sort('name');
     res.send(genres);
 });
 
-router.post('/', (req, res) => {
-    const { error } = validategenree(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
-    const newgenre = {
-        id: genres.length + 1,
+router.post('/', async (req, res) => {
+    const {
+        error
+    } = validategenree(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    let newgenre = new Genre({
         name: req.body.name
-    };
-    genres.push(newgenre);
+    });
+    newGenre = await newgenre.save();
     res.send(newgenre);
 });
 
-router.put('/:id', (req,res) => {
-    const genre = genres.find( g => g.id === parseInt(req.params.id));
-    if(!genre) return res.status(404).send('The genre with the given id is not available.');
+router.put('/:id', async (req, res) => {
+    const {
+        error
+    } = validategenree(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-    const { error } =  validategenree(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
-
-    genre.name = req.body.name;
-
+    let genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name}, {
+        new: true
+    } );
+    if (!genre) return res.status(404).send('The genre with the given id is not available.');
     res.send(genre);
 })
 
-router.delete('/:id', (req, res) => {
-    const genre = genres.find(g => g.id === parseInt(req.params.id));
-    if (!genre) return res.status(404).send('The genre with the given id is not available.');
+router.delete('/:id', async (req, res) => {
+    let genre = await Genre.findOneAndRemove(req.params.id);
 
-    const index = genres.indexOf(genre);
-    const delgenre = genres.splice(index,1);
-    res.send(delgenre);
-})
-
-router.get('/:id', (req, res) => {
-    const genre = genres.find(g => g.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send('The genre with the given id is not available.');
 
     res.send(genre);
 })
 
-function validategenree(genre){
+router.get('/:id', async (req, res) => {
+    const genre = await Genre.findById(req.params.id);
+    if (!genre) return res.status(404).send('The genre with the given id is not available.');
+
+    res.send(genre);
+})
+
+function validategenree(genre) {
     const schema = {
         name: joi.string().min(3).required()
     };
