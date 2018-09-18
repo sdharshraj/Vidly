@@ -1,6 +1,9 @@
 const express = require('express');
-const genres = require('./Routes/Genres');
+const genres = require('./Routes/genres');
+const movies = require('./Routes/movies');
+const customers = require('./Routes/customer');
 const home = require('./Routes/home');
+const rentals = require('./Routes/rental');
 const app = express();
 const mongoose = require('mongoose');
 
@@ -16,6 +19,9 @@ app.use(express.static('public'));
 app.set('view engine', 'pug');
 app.set('views', './views'); // default so optional
 app.use('/api/genres', genres);
+app.use('/api/movies', movies);
+app.use('/api/rentals', rentals);
+app.use('/api/customers', customers);
 app.use('/', home);
 
 
