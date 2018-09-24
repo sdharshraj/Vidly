@@ -18,7 +18,7 @@ const customerSchema = new mongoose.Schema({
         required: true,
         min: 4,
         max: 50
-    },
+    }
 });
 
 const Customer = mongoose.model('Customer', customerSchema);
@@ -33,5 +33,5 @@ function ValidateCustomer(customer) {
 }
 
 module.exports.customerSchema = customerSchema;
-module.exports.Customer = Customer;
-module.exports.ValidateCustomer = ValidateCustomer;
+module.exports.User = Customer;
+module.exports.ValidateUser = ValidateCustomer;

@@ -1,6 +1,17 @@
 const EventEmitter = require('events');
 const eventEmitter = new EventEmitter();
 
+const bcrypt = require('bcrypt');
+
+
+async function run() {
+    const salt = await bcrypt.genSalt(10);
+    const pass = await bcrypt.hash('12345',salt);
+
+    console.log(salt);
+    console.log(pass)
+}
+run();
 // Event emitter example
 // eventEmitter.on('something', something);
 

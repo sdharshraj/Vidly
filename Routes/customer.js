@@ -1,20 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const {Customer,ValidateCustomer} = require('../models/customer');
+const {User,ValidateUser} = require('../models/customer');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const customers = await Customer.find().sort('name');
+    const customers = await User.find().sort('name');
     res.send(customers);
 });
 
 router.post('/', async (req, res) => {
     const {
         error
-    } = ValidateCustomer(req.body);
+    } = ValidateUser(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let newCustomer = new Customer({
+    let newCustomer = new User({
         name: req.body.name,
         isGold: req.body.isGold,
         phone: req.body.phone
@@ -27,10 +27,10 @@ router.put('/:id', async (req, res) => {
     try {
         const {
             error
-        } = ValidateCustomer(req.body);
+        } = ValidateUser(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        let customer = await Customer.findOneAndUpdate({
+        let customer = await User.findOneAndUpdate({
             '_id': req.params.id
         }, {
             name: req.body.name,
@@ -48,7 +48,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        let customer = await Customer.findOneAndRemove({
+        let customer = await User.findOneAndRemove({
             '_id': req.params.id
         });
 
@@ -61,7 +61,7 @@ router.delete('/:id', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-    const customer = await Customer.findOne({
+    const customer = await User.findOne({
         '_id': req.params.id
     });
     if (!customer) return res.status(404).send('The customer with the given id is not available.');
